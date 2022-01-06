@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://documentation.wazuh.com/current/getting-started/components/wazuh-agent.html
+HostUrl=https://documentation.wazuh.com/current/_images/architecture_agent1.png

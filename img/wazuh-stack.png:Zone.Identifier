@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://documentation.wazuh.com/current/getting-started/components/index.html
+HostUrl=https://documentation.wazuh.com/current/_images/data_flow1.png
