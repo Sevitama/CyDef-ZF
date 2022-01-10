@@ -189,4 +189,17 @@ Die GPO-Einstellungen werden von den Clients anhand der hierarchischen Natur von
 Zum Erstellen von Gruppenrichtlinien kann ein Administrator den Gruppenrichtlinienobjekt-Editor verwenden, der ein eigenständiges Tool sein kann. 
 Es wird jedoch empfohlen, den Gruppenrichtlinien-Objekteditor als Erweiterung zu einem Active Directory-bezogenen MMC-Snap-In zu verwenden.
 
-\subsubsection{Folder Policy}
+\subsubsection{Folder \& File Policy}
+Create a Folder or a File on every computer in the domain.
+Can be applied to all or a subset of all computer.
+
+\subsubsection{Update GPO on Computers}
+\paragraph{Local computer}
+Run ``gpupdate /force'' in cmd.
+
+\paragraph{Remote}
+Run 
+\begin{lstlisting}
+  $computers = Get-ADComputer -Filter *
+  $computers |ForEach-Object -Process {Invoke-GPUpdate -Computer $_.name -RandomDelayInMinutes 0 -Force}
+\end{lstlisting}
