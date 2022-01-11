@@ -1,0 +1,23 @@
+\section{NTLM}
+Windows New Technology LAN Manager (NTLM) is a suite of security protocols offered by Microsoft to authenticate users identity and protect the integrity and confidentiality of their activity. At its core, NTLM is a single sign on (SSO) tool that relies on a \textbf{challenge-response protocol} to confirm the user without requiring them to submit a password.
+
+Despite known vulnerabilities, NTLM remains widely deployed even on new systems in order to maintain compatibility with legacy clients and servers. While NTLM is still supported by Microsoft, it has been replaced by Kerberos as the default authentication protocol in Windows 2000 and subsequent Active Directory (AD) domains.
+
+\subsection{Authentication Process}
+\begin{enumerate}
+  \item The user shares their username, password and domain name with the client.
+  \item The client develops a scrambled version of the password - or hash - and deletes the full password.
+  \item The client passes a plain text version of the username to the relevant server.
+  \item The server replies to the client with a challenge, which is a 16-byte random number.
+  \item In response, the client sends the challenge encrypted by the hash of the users password.
+  \item The server then sends the challenge, response and username to the domain controller (DC).
+  \item The DC retrieves the users password from the database and uses it to encrypt the challenge.
+  \item The DC then compares the encrypted challenge and client response. If these two pieces match, then the user is authenticated and access is granted.
+
+\end{enumerate}
+
+\subsection{Difference NTLM - Kerberos}
+First difference: How do the two protocols manage authentication. NTLM relies on a three-way handshake between the client and server to authenticate a user. Kerberos uses a two-part process that leverages a ticket granting service or key distribution center.\\
+
+Second difference: NTLM relies on password hashing and Kerberos leverages encryption.
+

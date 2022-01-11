@@ -1,0 +1,71 @@
+\section{Mimikatz}
+Post exploitation tool to retrieve/handle credentials in various formats. \textbf{Requires local admin privileges}. Retrieve credentials from LSASS memory or SAM files:
+\begin{itemize}
+  \item Cleartext passwords (depends on Windows version and GPO settings)
+  \item NTLM hashes
+  \item Kerberos tickets
+\end{itemize}
+Mimikatz can perform pass-the-hash and pass-the-ticket attacks and also build custom (golden) tickets (used for Kerberos authentication).\\
+
+\subsection{Debug Privilege}
+The debug privilege according to Microsoft determines which users can attach a debugger to any process or to the kernel. By default this privilege is given to Local Administrators. However it is highly unlikely that a Local Administrator will need this privilege unless he is a system programmer.\\
+
+In a default installation of Windows Server 2016 the group policy is not defined which means that only Local Administrators have this permission.\\
+
+From the attackers perspective this check can be performed through Mimikatz with the following command:
+\begin{lstlisting}
+  privilege::debug
+\end{lstlisting}
+
+\subsection{Attacks}
+\paragraph{Pass-the-Hash}
+With the Pass-The-Hash attack, the attacker tries to run a process with other credentials with the NTLM hash of the user, instead of the actual password.
+
+\paragraph{Pass-the-Ticket}
+With the Pass-the-Ticket attack, the attacker injects one or multiple Kerberos Tickets into the current session.
+
+\paragraph{Over-Pass the Hash (Pass-the-Key)}
+This attack aims to use the user NTLM hash to request Kerberos tickets, as an alternative to the common Pass The Hash over NTLM protocol. Therefore, this could be especially useful in networks where NTLM protocol is disabled and only Kerberos is allowed as authentication protocol.
+
+\paragraph{Kerberos Golden Ticket}
+A golden ticket attack allows an attacker to create a Kerberos authentication ticket from a compromised service account, called krbtgt, with the help of Mimikatz. \\
+
+With the hash of this compromised account and some information about the domain, an attacker can create fraudulent tickets. These tickets appear pre-authorized to perform whatever action the attackers want without any real authentication.
+
+\paragraph{Kerberos Silver Ticket}
+A hacker can create a Silver Ticket by cracking a computer account password and using that to create a fake authentication ticket. Kerberos allows services to log in without double-checking that their token is actually valid, which hackers have exploited to create Silver Tickets.
+
+\paragraph{Pass-the-Cache}
+Pass-the-Cache, allows an attacker to take Kerberos credentials compromised from a Linux system and replay them on Windows systems within an Active Directory domain
+
+\subsection{Preventions}
+\begin{itemize}
+  \item Disabled Debug Privilege.
+  \item Activate RunAsPPL registry key to protect LSA.
+  \item Activate restricted Admin Mode.
+  \item Prevent local hashing of passwords.
+\end{itemize}
+
+\textbf{For all commands take a look in the slides.}
+
+
+
+
+
+
+
+\section{Sysmon}
+\subsection{Sigma}
+Sigma is a generic and open signature format that allows you to describe relevant log events. The rule format is very flexible, easy to write and applicable to any type of log file. The main purpose of this project is to provide a structured form in which researchers or analysts can describe their once developed detection methods and make them shareable with others. Sigma is for log files what Snort is for network traffic and YARA is for files.
+
+With Sigma you can get a better overview of the logs which were captured by sysmon.
+
+\subsection{Overview}
+System Monitor (Sysmon) is a Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. It provides detailed information about process creations, network connections, and changes to file creation time. By collecting the events it generates using Windows Event Collection or SIEM agents and subsequently analyzing them, you can identify malicious or anomalous activity and understand how intruders and malware operate on your network.\\
+
+Note that Sysmon does not provide analysis of the events it generates, nor does it attempt to protect or hide itself from attackers.
+
+\subsubsection{Detecting Mimikatz}
+Because Sysmon lies between kernel and events, it monitors everything inbetween. It logs process creations, network connections and other stuff to detect mimikatz attacks.\\
+
+For example: EventID 10 (Sysmon Event) is a Pass The Hash Attack.
