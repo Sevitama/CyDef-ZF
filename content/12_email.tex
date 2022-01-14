@@ -1,6 +1,8 @@
 \section{E-Mail Security}
 \includegraphics[width=\linewidth]{email-security.png}
 
+
+
 \subsection{SPF (Sender Policy Framework)}
 SPF allows senders to define which IP addresses are allowed to send mail for a particular domain. SPF alone is limited to detecting a forged sender claim in the envelope of the email, which is used when the mail gets bounced.
 Only in combination with DMARC can it be used to detect the forging of the visible sender in emails, a technique often used in phishing and email spam.\\
@@ -30,9 +32,11 @@ An SPF check can be made via console:
 \includegraphics[width=\linewidth]{spf-check-yes.png}\\
 \includegraphics[width=\linewidth]{spf-check-yes-2.png}
 
-
 \subsubsection{Bypass SPF}
 Have a legit email address which passes the check in the header in the E-Mail envelope and the spoofed email address in the email header.
+
+
+
 
 
 \subsection{DKIM (Domain Keys Identified Mail)}
@@ -61,7 +65,7 @@ That signature can be validated against a public cryptographic key in the organi
 \end{enumerate}
 
 \subsubsection{Check via console}
-An DMARK check can be made via console.
+An DKIM check can be made via console.
 Get the domain prefix from the header:\\
 \includegraphics[width=\linewidth]{dkim-prefix-domain.png}
 
@@ -77,9 +81,47 @@ Get the domain prefix from the header:\\
 \paragraph{Failed}
 \includegraphics[width=\linewidth]{dkim-failed.png}
 
+
+
+
 \subsection{DMARC}
 Domain-based Message Authentication, Reporting, and Conformance.\\
 
-DMARC unifies the SPF and DKIM authentication mechanisms into a common framework and allows domain owners to declare how they would like email from that domain to be handled if it fails an authorization test.
+DMARC unifies the SPF and DKIM authentication mechanisms into a common framework and allows domain owners to declare how they would like email from that domain to be handled if it fails an authorization test.\\
+
+DKIM-Records are TXT DNS-Records. Used Codes in TXT content:
+\begin{itemize}
+  \item \textbf{v}: Version of record. E.g.: v=DMARC1
+  \item \textbf{p}: Policy (e.g: none or quarantine)
+  \item \textbf{rua}: (Report Email Address)
+\end{itemize}
+
+\subsubsection{Check via console}
+An DMARK check can be made via console.
+Get the domain prefix from the header:\\
+\includegraphics[width=\linewidth]{dkim-prefix-domain.png}
+
+\begin{lstlisting}
+  dig -t txt _dmarc.hacking-lab.com +short
+  "v=DMARC1; p=none; rua=mailto:dmarc-reports-234324@hacking-lab.com; ri=86400"
+\end{lstlisting}
+
+\subsubsection{Where to check in metadata}
+\paragraph{Passed}
+\includegraphics[width=\linewidth]{dmarc-passed.png}
+
+\paragraph{Failed}
+\includegraphics[width=\linewidth]{dmarc-failed.png}
 
 \subsection{TLS Encryption}
+\subsubsection{Where to check in metadata}
+\paragraph{Passed}
+\subparagraph{Example 1}
+\includegraphics[width=\linewidth]{email-tls-passed-1.png}
+\subparagraph{Example 2}
+\includegraphics[width=\linewidth]{email-tls-passed-2.png}
+\subparagraph{Example 3}
+\includegraphics[width=\linewidth]{email-tls-passed-3.png}
+
+\paragraph{Failed}
+\includegraphics[width=\linewidth]{email-tls-failed.png}

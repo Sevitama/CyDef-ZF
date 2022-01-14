@@ -15,3 +15,147 @@ Ein \textbf{SOAR} ermöglicht es dem Sicherheitsteam, die Alerts schnell und eff
 Ein \textbf{SIEM} sammelt vorallem Daten und generiert Alerts.
 
 \subsection{Velociraptor}
+Velociraptor is a unique, advanced open-source endpoint monitoring, digital forensic and cyber response platform.
+
+A powerful DFIR (Digital Forensic and Incident Response) technique is searching bulk data for patterns:
+\begin{itemize}
+  \item Searching for CC data in process memory
+  \item Searching for URLs in process memory
+  \item Searching binaries for malware signatures
+  \item Searching registry for patterns
+\end{itemize}
+Bulk searching helps to identify evidence without needing to parse file formats.
+
+\subsection{Virtual File System (VFS)}
+\begin{itemize}
+  \item \textbf{File}: File system access based on OS FS API
+  \item \textbf{NTFS}: NTFS raw parsing filesystem access
+  \item \textbf{Registry}: Windows Registry access using the Registry API
+  \item \textbf{Artifacts}: Artifacts collected from the client incl. type and time in Velociraptor Artifacts are commands and scripts that actually grab some data (we usually call these artifacts) from clients.
+\end{itemize}
+
+\subsubsection{File Download}
+You may collect files individually or an entire folder recursively.
+Files get marked with the floppy once available on the server.
+
+\subsection{Artifacts}
+Velociraptor is a query language engine.
+Basically everything is a query (Velociraptor Query Language (VQL)).
+Artifacts aim to encapsulate evidence collection:
+\begin{itemize}
+  \item Structure is YAML
+  \item Ideally includes comments
+  \item Allow for customization where reasonable
+  \item Recursion. Use Artifacts in the query language
+\end{itemize}
+
+\subsection{Hunting}
+Hunting enables you to collect the same artifacts over an entire fleet.
+\begin{itemize}
+  \item Only systems that are connected will participate in the hunt
+  \item Only systems that are connected will deliver results
+  \item Hunts are run for quite some time (days), repeatedly
+  \item Hunts may be restricted by label or OS
+\end{itemize}
+
+\subsection{Collecting Files}
+Incident Response may require for quick conservation of a number artifacts to be analyzed later on or being given somewhere else for analysis. 
+With Velociraptor comes the KapeFiles Client Artifact which is a great collector of relevant files.
+
+\paragraph{Approaches}
+\begin{itemize}
+  \item Run hunt or collection within the Velociraptor Infrastructure
+  \item Run standalone collector with Velociraptor
+\end{itemize}
+
+\paragraph{What to collect}
+Usually good:
+\begin{itemize}
+  \item \_BasicCollection
+  \item \_SANS\_Triage
+  \item \_KapeTriage
+\end{itemize}
+
+\paragraph{Potential Issues}
+Collecting large files will not result in a memory bottleneck as Velociraptor throttles clients if needed. However, extensive hunts on machines or collection of user document folders, virtual machine images, memory dumps could easily jam your servers connection or fill your servers disk. Be careful!
+
+\subsubsection{Download Structure}
+\paragraph{Top Level}
+The top level includes the hunt configuration details including some meta info.
+The client folder contain the results per client workstation name.
+
+\paragraph{Per Client Flow Level}
+Within the collections flow folder. The uploaded files are separated by the accessor they got collected with. Thus \$MFT will be available from the ntfs folder. Any common files from the auto folder.
+
+\paragraph{Timestamps and Hashes}
+Kape does by default create a VHDX and timestomp files in it. 
+So non-tech savvy folks may browse it like a real disk. 
+You are better of by using the \$MFT directly.
+Timestamps and file hashes in the meta info files.
+
+\subsubsection{Collect manually}
+\begin{lstlisting}
+  PS C:\> velociraptor.exe artifacts list *Kape*
+  Windows.KapeFiles.Targets
+
+  PS C:\> velociraptor.exe artifacts show Windows.KapeFiles.Targets
+  parameters:
+  ...
+  - name: _BasicCollection
+    description: "Basic Collection (by Phill Moore): Thumbcache DB, at .job,
+    at .job, at SchedLgU.txt, at SchedLgU.txt, XML, XML, LNK Files from Recent, ..."
+
+  PS C:\> velociraptor.exe artifacts collect Windows.KapeFiles.Targets --args=_BasicCollection=Y --output=Collection_$env:computername.zip
+\end{lstlisting}
+
+\subsection{Speed}
+\includegraphics[width=\linewidth]{velociraptor-speed.png}
+
+\subsection{VQL}
+It looks like SQL and can be run in the Notebook.
+Everything in Velociraptor is basically returning Table (Resultset).
+Functions and plugins are the major accelerators.
+
+\subsubsection{Syntax}
+Check the slides for the syntax.
+
+\subsection{Deployment}
+Velociraptor will create configuration files from which you can build clients and servers for various architectures (provided the architecture has a compiler for GO available).\\
+
+\subsubsection{Linux}
+To build a Linux server Debian installer package on Windows, run
+\begin{lstlisting}
+  velociraptor.exe config generate -i
+  velociraptor.exe --config server.config.yaml debian server
+\end{lstlisting}
+To install the server deb package on Debian, run:
+\begin{lstlisting}
+  sudo dpkg -i velociraptor_server*.deb
+  sudo server service velociraptor_server status
+\end{lstlisting}
+Installation of the package might fail due to dependency errors. In that case run apt-get install -f and rerun the above.
+
+\subsubsection{Windows}
+To create an .msi installer file. Unzip the Velociraptor source and change to the WIX folder:
+\begin{lstlisting}
+  cd velociraptor-src\docs\wix
+  mkdir output
+  copy pathobinary\velociraptor.exe output\velociraptor.exe
+  copy pathobinary\client.config.yaml output\
+  build_custom.bat
+\end{lstlisting}
+
+\paragraph{Information for Windows}
+You are strongly advised to sign Windows binaries to avoid hiccups with Defender. Use Microsofts signtool.exe or osslsigncode on Linux.\\
+
+Binaries are usually deployed either by:
+\begin{itemize}
+  \item GPO scheduled tasks
+  \item GPO assigned software
+  \item Microsoft System Center Configuration Manager (SCCM)
+  \item Some other custom SW deployment mechanism
+\end{itemize}
+
+\subsection{Exercises}
+There are example exercises in the slides. 
+Check them for help.
