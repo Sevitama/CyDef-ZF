@@ -1,4 +1,7 @@
 \section{YARA}
+YARA is a tool aimed at (but not limited to) helping malware researchers to identify and classify malware samples. 
+With YARA you can create descriptions of malware families (or whatever you want to describe) based on textual or binary patterns. 
+Each description, a.k.a rule, consists of a set of strings and a boolean expression which determine its logic.
 \begin{itemize}
   \item Identifying malware: hash code
   \begin{itemize}
@@ -7,8 +10,7 @@
   \end{itemize}
   \item Alternative:
   \begin{itemize}
-    \item Identify ``marker'' patterns
-    \item Standard: YARA rules
+    \item Identify ``marker'' patterns $\rightarrow$ Standard: YARA rules
   \end{itemize}
 \end{itemize}
 
@@ -158,3 +160,30 @@ Most malware today is packed in some way to help get around AV signature detecti
 There are over 8000 known packers out there, each with their own signatures.
 They can range from simple compression to full on encryption / debugger detection and generally make the life of the Malware Reverser a pain.
 Packers are not fool proof - the exe HAS to be decrypted / decompressed at SOME point in order to run on the OS.
+
+
+\subsection{Forensic Extraction}
+Local:
+\begin{lstlisting}
+  #Volatility2
+  volatility2 -f ./0zapftis.vmem yarascan -y /opt/applic/yara-rules/malware/MALW_LuaBot.yar
+  volatility2 -f ./0zapftis.vmem yarascan --yara-file /opt/applic/yara-rules/malware/MALW_LuaBot.yar
+  volatility2 -f ./0zapftis.vmem yarascan --yara-rule "http:"
+  
+  #Volatility3
+  volatility3 -f ./0zapftis.vmem yarascan.YaraScan --yara-rules "http:"
+  volatility3 -f /home/hacker/Downloads/0zapftis.vmem windows.vadyarascan.VadYaraScan --yara-file ./packers_index.yar
+  volatility3 -f /home/hacker/Downloads/0zapftis.vmem yarascan.YaraScan --yara-file ./packers_index.yar
+
+  volatility3 -f <file> --yara-file <rule-file>
+  \end{lstlisting}
+
+  Network:
+  \begin{lstlisting}
+  foremost -t all -f tcpdump.pcap
+  binwalk -e tcpdump.pcap
+  tcpflow -r tcpdump.pcap -o .
+  chaosreader tcpdump.pcap
+  Wireshark - Follow TcpStream -> SaveAs ...
+  \end{lstlisting}
+  
