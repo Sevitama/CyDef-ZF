@@ -112,7 +112,7 @@ Sysinternals tool, wenn ADUC nicht vorhanden ist.\\
   \item Sie können Snapshots von einer Domäne machen und diese später offline analysieren
 \end{itemize}
 
-\paragraph{Net Tools}
+\paragraph{Net Tools}\label{par:nettools}
 \begin{lstlisting}
 # info on local/domain user
 net user alice [/domain]
@@ -126,7 +126,7 @@ net view \\fileserver01
 net accounts
 \end{lstlisting}
 
-\paragraph{WMI}
+\paragraph{WMI}\label{par:wmi}
 WMI kann:
 \begin{itemize}
   \item Laufende Prozesse auflisten
@@ -145,7 +145,7 @@ Kann via CLI verwendet werden:
   wmic /node:REMOTEHOST path Win32_TerminalServiceSetting where AllowTSConnections="0" call SetAllowTSConnections "1"
 \end{lstlisting}
 
-\subsubsection{Ping Castle}
+\subsubsection{Ping Castle}\label{par:ping-castle}
 Ping Castle ist ein Tool zur schnellen Bewertung des Sicherheitsniveaus von Active Directory mit einer Methodik, die auf einer Risikobewertung und einem Reifegradrahmen basiert.\\
 \paragraph{Haupt-Features}
 \begin{itemize}
