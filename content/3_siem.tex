@@ -15,6 +15,20 @@ Ein SIEM macht folgende Dinge:
 Zum siebten Mal in Folge wurde Splunk von Gartner als Leader im Magic Quadrant 2021 für Security Information and Event Management (SIEM) eingestuft.\\
 \includegraphics[width=0.8\linewidth]{siem-ranking.png}
 
+\subsubsection{Sigma}
+Sigma ist ein generisches und offenes Signaturformat, mit dem Sie relevante Protokollereignisse auf einfache Weise beschreiben können. Das Regelformat ist sehr flexibel, leicht zu schreiben und auf jede Art von Protokolldateien anwendbar. Das Hauptziel dieses Projekts ist es, eine strukturierte Form bereitzustellen, in der Forscher oder Analysten ihre einmal entwickelten Erkennungsmethoden beschreiben und mit anderen teilen können.\\
+\textit{Sigma} ist für Logs das, was Snort für den Netzwerkverkehr und YARA für Dateien ist.\\
+\textbf{Use-Cases}
+\begin{itemize}
+    \item Describe your detection method in Sigma to make it shareable
+    \item YAML based
+    \item Write your SIEM searches in Sigma to avoid a vendor lock-in
+    \item Share the signature in the appendix of your analysis along with IOCs and YARA rules
+    \item Share the signature in threat intel communities - e.g. via MISP
+    \item Provide Sigma signatures for malicious behaviour in your own application
+\end{itemize}
+
+
 \subsection{Wazuh}
 Wazuh ist eine Open-Source-Sicherheitsplattform, die sich auf die Überwachung der Infrastruktur, die Erkennung von Sicherheitsrisiken und die Reaktion auf Vorfälle im Sinne eines SIEM und EDR (Endpoint Detection \& Response) konzentriert.\\
 
